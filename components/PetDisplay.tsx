@@ -160,6 +160,45 @@ const CurrentPet: React.FC<{ state: PetState }> = ({ state }) => {
     );
 };
 
+const Accessory: React.FC<{ name: AccessoryName | null }> = ({ name }) => {
+    if (!name) return null;
+
+    switch (name) {
+        case 'tophat':
+            return (
+                <g transform="translate(0, -250) rotate(-5)">
+                    <rect x="-40" y="-30" width="80" height="15" fill={PANDA_DARK} stroke={PANDA_STROKE} strokeWidth="4" rx="2"/>
+                    <rect x="-30" y="-70" width="60" height="40" fill={PANDA_DARK} stroke={PANDA_STROKE} strokeWidth="4" />
+                </g>
+            );
+        case 'sunglasses':
+            return (
+                <g transform="translate(0, -145)" fill={PANDA_DARK} stroke="black" strokeWidth="3">
+                    <path d="M-65,0 h-15 a10,10 0 0,0 -20,0 h-10 v-20 h65 Z" transform="skewX(-10)"/>
+                    <path d="M65,0 h15 a10,10 0 0,1 20,0 h10 v-20 h-65 Z" transform="skewX(10)"/>
+                    <rect x="-15" y="-5" width="30" height="5" />
+                </g>
+            );
+        case 'partyhat':
+             return (
+                <g transform="translate(20, -270) rotate(15)">
+                    <polygon points="0,0 50,-20 25,-80" fill="#F4A7A7" stroke={PANDA_STROKE} strokeWidth="4"/>
+                    <circle cx="25" cy="-80" r="8" fill="#F9DF8D" />
+                </g>
+            );
+        case 'bowtie':
+            return (
+                 <g transform="translate(0, -60)">
+                    <polygon points="0,0 -30,-20 -30,20" fill="#E583A0" stroke={PANDA_STROKE} strokeWidth="4" />
+                    <polygon points="0,0 30,-20 30,20" fill="#E583A0" stroke={PANDA_STROKE} strokeWidth="4" />
+                    <circle cx="0" cy="0" r="8" fill="#d86f8f" stroke={PANDA_STROKE} strokeWidth="2"/>
+                </g>
+            );
+        default:
+            return null;
+    }
+}
+
 
 const PetDisplay: React.FC<PetDisplayProps> = ({ state, stage, equippedAccessory }) => {
   return (
@@ -205,6 +244,7 @@ const PetDisplay: React.FC<PetDisplayProps> = ({ state, stage, equippedAccessory
       `}</style>
       <svg viewBox="-150 -320 300 450" className="w-full h-full">
         <CurrentPet state={state} />
+        <Accessory name={equippedAccessory} />
          {state === 'bathing' && (
             <g transform="translate(-50, -50)"> {/* Adjust position of effects */}
                 <Bubbles />
