@@ -42,7 +42,7 @@ const PandaSnap: React.FC<PandaSnapProps> = (props) => {
             className="w-full h-48 rounded-lg mb-4 border-2 border-white/80 shadow-inner flex items-center justify-center p-2 relative overflow-hidden"
             style={{ background: backgrounds[selectedBg].style }}
         >
-            <PetDisplay {...props} />
+            <PetDisplay state={props.state} stage={props.stage} equippedAccessory={props.equippedAccessory} />
              {isFlashing && <div className="absolute inset-0 bg-white opacity-80 animate-flash"></div>}
         </div>
         
