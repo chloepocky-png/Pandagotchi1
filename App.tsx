@@ -211,12 +211,12 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
+      <h1 className="text-5xl md:text-6xl text-center text-[#A76B79] font-fredoka mb-4">Pandagotchi</h1>
       <div className="w-full max-w-sm md:max-w-lg mx-auto rounded-[40px] shadow-lg p-3 border-b-4 border-r-2 border-[#E583A0]/40 bg-[#F8B5C9]">
         <div className="w-full h-full bg-[#FAD1DC] rounded-[28px] p-2">
             <div className="w-full h-full bg-[#FEE4E9] rounded-[20px] p-4 flex flex-col items-center relative shadow-inner">
-                <h1 className="text-3xl md:text-4xl text-center text-[#A76B79] font-fredoka -mt-1">Tamagotchi</h1>
                 
-                <div className="w-full px-2 mt-3">
+                <div className="w-full px-2 mt-1">
                   <StatusBar stats={stats} isSleeping={petState === 'sleeping'} />
                 </div>
                 
