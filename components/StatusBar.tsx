@@ -1,6 +1,6 @@
 import React from 'react';
-import { Stat } from '../types';
-import { MAX_STAT } from '../constants';
+import { Stat } from '../types.ts';
+import { MAX_STAT } from '../constants.ts';
 
 interface StatusBarProps {
   stats: Record<Stat, number>;

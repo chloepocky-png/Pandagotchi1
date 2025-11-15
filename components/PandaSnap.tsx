@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { PetState, PetStage, AccessoryName, CapturedImage, BackgroundKey } from '../types';
-import PetDisplay from './PetDisplay';
+import { PetState, PetStage, AccessoryName, CapturedImage, BackgroundKey } from '../types.ts';
+import PetDisplay from './PetDisplay.tsx';
 
 interface PandaSnapProps {
   state: PetState;

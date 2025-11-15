@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Friend } from '../types';
+import { Friend } from '../types.ts';
 import { GoogleGenAI, Type } from "@google/genai";
 
 interface FriendsAppProps {
