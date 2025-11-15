@@ -1,16 +1,35 @@
-
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
 import App from './App';
 
-const rootElement = document.getElementById('root');
-if (!rootElement) {
-  throw new Error("Could not find root element to mount to");
+function main() {
+  const rootElement = document.getElementById('root');
+  if (!rootElement) {
+    console.error("Erreur fatale : L'élément racine #root n'a pas été trouvé.");
+    return;
+  }
+
+  try {
+    const root = createRoot(rootElement);
+    root.render(
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    );
+  } catch (error) {
+    console.error("Erreur fatale : Échec du rendu de l'application React.", error);
+    rootElement.innerHTML = `
+      <div style="padding: 20px; text-align: center; font-family: sans-serif; color: #A76B79;">
+        <h2>Oups ! Une erreur critique est survenue.</h2>
+        <p>L'application n'a pas pu démarrer. Veuillez vérifier la console du développeur pour plus de détails.</p>
+      </div>
+    `;
+  }
 }
 
-const root = ReactDOM.createRoot(rootElement);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+// S'assurer que le script s'exécute après que le DOM est prêt
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', main);
+} else {
+  main();
+}
