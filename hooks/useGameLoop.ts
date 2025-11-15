@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 export const useGameLoop = (callback: () => void, delay: number | null) => {
-  const savedCallback = useRef<() => void>();
+  const savedCallback = useRef(callback);
 
   // Remember the latest callback.
   useEffect(() => {
@@ -11,9 +11,7 @@ export const useGameLoop = (callback: () => void, delay: number | null) => {
   // Set up the interval.
   useEffect(() => {
     const tick = () => {
-      if (savedCallback.current) {
-        savedCallback.current();
-      }
+      savedCallback.current();
     };
 
     if (delay !== null) {

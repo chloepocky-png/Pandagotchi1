@@ -161,7 +161,7 @@ const CurrentPet: React.FC<{ state: PetState }> = ({ state }) => {
 };
 
 
-const PetDisplay: React.FC<PetDisplayProps> = ({ state, stage }) => {
+const PetDisplay: React.FC<PetDisplayProps> = ({ state, stage, equippedAccessory }) => {
   return (
     <div className="relative w-full h-full flex items-center justify-center">
       <style>{`
