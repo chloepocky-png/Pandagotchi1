@@ -1,5 +1,4 @@
-
-import { Stat, AccessoryName, Friend } from './types.ts';
+import { Stat, AccessoryName, Friend } from './types';
 
 export const MAX_STAT = 100;
 export const GAME_SPEED = 2000; // milliseconds

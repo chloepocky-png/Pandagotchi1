@@ -1,7 +1,6 @@
-
 import React from 'react';
-import { CapturedImage, BackgroundKey } from '../types.ts';
-import PetDisplay from './PetDisplay.tsx';
+import { CapturedImage, BackgroundKey } from '../types';
+import PetDisplay from './PetDisplay';
 
 interface GalleryAppProps {
   gallery: CapturedImage[];

@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { GoogleGenAI } from "@google/genai";
-import { PetState, ChatMessage } from '../types.ts';
+import { PetState, ChatMessage } from '../types';
 
 const getPersonality = (state: PetState): string => {
   switch (state) {

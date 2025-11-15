@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { PetState, PetStage } from '../types.ts';
+import { PetState, PetStage } from '../types';
 
 interface PetDisplayProps {
   state: PetState;

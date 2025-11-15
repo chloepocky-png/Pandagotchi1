@@ -18,8 +18,6 @@
   }
 }
 </script>
-<!-- Ajout de Babel pour la transformation TSX/JSX dans le navigateur -->
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <style>
     body {
         font-family: 'Varela Round', sans-serif;
@@ -31,7 +29,6 @@
 </head>
   <body class="bg-[#FDF3F6]">
     <div id="root"></div>
-    <!-- Modification du type de script pour utiliser Babel pour la transpilation -->
-    <script type="text/babel" data-presets="react,typescript" data-type="module" src="./index.tsx"></script>
+    <script type="module" src="/index.tsx"></script>
   </body>
 </html>
