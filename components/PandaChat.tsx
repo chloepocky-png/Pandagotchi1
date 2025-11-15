@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { GoogleGenAI, Chat } from "@google/genai";
-import { PetState, ChatMessage } from '../types.ts';
+import { PetState, ChatMessage } from '../types';
 
 // Helper function to create the system instruction based on pet's state
 const getSystemInstruction = (state: PetState): string => {

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import PetDisplay from './components/PetDisplay.tsx';
-import StatusBar from './components/StatusBar.tsx';
-import PhoneModal from './components/PhoneModal.tsx';
-import ActionButton from './components/ActionButton.tsx';
-import GameOverModal from './components/GameOverModal.tsx';
-import { PetState, Stat, PetStage, AccessoryName } from './types.ts';
-import { GAME_SPEED, MAX_STAT, STAT_DECAY_RATE, ACTION_AMOUNTS, EVOLUTION_AGE, ACCESSORIES, ACCESSORY_NAMES_FR, DAY_CYCLE_TICKS, NIGHT_START_TICK, SLEEP_STAT_DECAY_RATE } from './constants.ts';
-import { useGameLoop } from './hooks/useGameLoop.ts';
+import PetDisplay from './components/PetDisplay';
+import StatusBar from './components/StatusBar';
+import PhoneModal from './components/PhoneModal';
+import ActionButton from './components/ActionButton';
+import GameOverModal from './components/GameOverModal';
+import { PetState, Stat, PetStage, AccessoryName } from './types';
+import { GAME_SPEED, MAX_STAT, STAT_DECAY_RATE, ACTION_AMOUNTS, EVOLUTION_AGE, ACCESSORIES, ACCESSORY_NAMES_FR, DAY_CYCLE_TICKS, NIGHT_START_TICK, SLEEP_STAT_DECAY_RATE } from './constants';
+import { useGameLoop } from './hooks/useGameLoop';
 
 const BambooIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.1511 20.8351C9.64333 21.0378 9.07333 21.0191 8.56333 20.7818C8.05333 20.5444 7.64333 20.1064 7.42167 19.5668L7.33333 19.3334C7.11167 18.7938 7.08556 18.2044 7.26 17.6667C6.44 17.3734 6 16.5867 6 15.6667V15.5C6 14.58 6.44 13.7934 7.26 13.5C7.08556 12.9624 7.11167 12.3729 7.33333 11.8334L7.42167 11.6C7.64333 11.0604 8.05333 10.6224 8.56333 10.3851C9.07333 10.1478 9.64333 10.1291 10.1511 10.3318L10.5 10.5V3C10.5 2.44772 10.9477 2 11.5 2C12.0523 2 12.5 2.44772 12.5 3V20.8351H10.1511Z" fill="#84A17D"/></svg>;
 const JouerIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" fill="#F4A7A7"/><path d="M10.5 15.5V8.5L15.5 12L10.5 15.5Z" fill="white"/></svg>;

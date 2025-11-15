@@ -1,5 +1,5 @@
 import React from 'react';
-import { Friend } from '../types.ts';
+import { Friend } from '../types';
 
 interface FriendChatProps {
     friend: Friend;
