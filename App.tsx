@@ -211,58 +211,55 @@ const App: React.FC = () => {
   const actionButtonsDisabled = petState === 'sleeping' || isBathing || isGameOver;
 
   return (
-    <div className="bg-[#EAE6F9] min-h-screen flex flex-col items-center justify-center p-4">
-      <h1 className="text-5xl font-bold text-center text-[#A76B79] mb-4 font-fredoka">Pandagotchi</h1>
-      <div className="relative w-full max-w-sm mx-auto bg-[#FDF3F6] rounded-[50px] border-8 border-b-16 border-[#F7A6B9] shadow-2xl p-4 pt-6 flex flex-col gap-3">
-          
-          <div className="absolute top-2 right-6 bg-[#F7A6B9] text-white px-3 py-1 rounded-full text-sm font-bold shadow-inner">
-              Jour: {ageInDays}
-          </div>
-          
-          <div className="flex justify-between items-center px-2">
-            <div className="w-12 h-4 bg-[#F7A6B9]/50 rounded-full"></div>
-            <div className="w-12 h-4 bg-[#F7A6B9]/50 rounded-full"></div>
-          </div>
-
-        <div className="bg-[#A76B79] rounded-2xl h-64 md:h-80 w-full shadow-inner overflow-hidden relative">
-          <PetDisplay state={getPetState()} stage={stage} equippedAccessory={equippedAccessory} />
+    <div className="relative w-full max-w-sm mx-auto bg-[#FDF3F6] rounded-[50px] border-8 border-b-16 border-[#F7A6B9] shadow-2xl p-4 pt-6 flex flex-col gap-3">
+        
+        <div className="absolute top-2 right-6 bg-[#F7A6B9] text-white px-3 py-1 rounded-full text-sm font-bold shadow-inner">
+            Jour: {ageInDays}
         </div>
         
-        <div className="px-2 mt-2">
-            <StatusBar stats={stats} isSleeping={petState === 'sleeping'} />
+        <div className="flex justify-between items-center px-2">
+          <div className="w-12 h-4 bg-[#F7A6B9]/50 rounded-full"></div>
+          <div className="w-12 h-4 bg-[#F7A6B9]/50 rounded-full"></div>
         </div>
 
-        <p className="text-center text-sm text-[#B48491] mt-2 h-6">{message}</p>
-
-        <div className="grid grid-cols-2 gap-3 mt-2">
-            <ActionButton icon={<BambooIcon />} onClick={handleFeed} disabled={actionButtonsDisabled}>Nourrir</ActionButton>
-            <ActionButton icon={<JouerIcon />} onClick={handlePlay} disabled={actionButtonsDisabled}>Jouer</ActionButton>
-            <ActionButton icon={<ToilettesIcon />} onClick={handlePoo} disabled={actionButtonsDisabled}>Toilettes</ActionButton>
-            <ActionButton icon={<BainIcon />} onClick={handleClean} disabled={actionButtonsDisabled}>Bain</ActionButton>
-        </div>
-        
-        <div className="flex justify-center mt-3">
-            <button onClick={() => setIsPhoneOpen(true)} className="p-3 bg-[#FDF3F6] rounded-full shadow-md border-b-4 border-[#FAD1DC] transition-all hover:bg-white active:shadow-inner">
-                <PhoneIcon />
-            </button>
-        </div>
-        
-        {isPhoneOpen && <PhoneModal 
-            onClose={() => setIsPhoneOpen(false)} 
-            coins={coins}
-            ownedAccessories={ownedAccessories}
-            equippedAccessory={equippedAccessory}
-            onAddCoins={(amount) => setCoins(c => c + amount)}
-            onBuyAccessory={buyAccessory}
-            onEquipAccessory={equipAccessory}
-            petState={getPetState()}
-            petStage={stage}
-            userFriendCode={friendCode}
-        />}
-
-        {isGameOver && <GameOverModal onRestart={handleRestart} />}
-
+      <div className="bg-[#A76B79] rounded-2xl h-64 md:h-80 w-full shadow-inner overflow-hidden relative">
+        <PetDisplay state={getPetState()} stage={stage} equippedAccessory={equippedAccessory} />
       </div>
+      
+      <div className="px-2 mt-2">
+          <StatusBar stats={stats} isSleeping={petState === 'sleeping'} />
+      </div>
+
+      <p className="text-center text-sm text-[#B48491] mt-2 h-6">{message}</p>
+
+      <div className="grid grid-cols-2 gap-3 mt-2">
+          <ActionButton icon={<BambooIcon />} onClick={handleFeed} disabled={actionButtonsDisabled}>Nourrir</ActionButton>
+          <ActionButton icon={<JouerIcon />} onClick={handlePlay} disabled={actionButtonsDisabled}>Jouer</ActionButton>
+          <ActionButton icon={<ToilettesIcon />} onClick={handlePoo} disabled={actionButtonsDisabled}>Toilettes</ActionButton>
+          <ActionButton icon={<BainIcon />} onClick={handleClean} disabled={actionButtonsDisabled}>Bain</ActionButton>
+      </div>
+      
+      <div className="flex justify-center mt-3">
+          <button onClick={() => setIsPhoneOpen(true)} className="p-3 bg-[#FDF3F6] rounded-full shadow-md border-b-4 border-[#FAD1DC] transition-all hover:bg-white active:shadow-inner">
+              <PhoneIcon />
+          </button>
+      </div>
+      
+      {isPhoneOpen && <PhoneModal 
+          onClose={() => setIsPhoneOpen(false)} 
+          coins={coins}
+          ownedAccessories={ownedAccessories}
+          equippedAccessory={equippedAccessory}
+          onAddCoins={(amount) => setCoins(c => c + amount)}
+          onBuyAccessory={buyAccessory}
+          onEquipAccessory={equipAccessory}
+          petState={getPetState()}
+          petStage={stage}
+          userFriendCode={friendCode}
+      />}
+
+      {isGameOver && <GameOverModal onRestart={handleRestart} />}
+
     </div>
   );
 };
