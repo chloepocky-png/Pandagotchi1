@@ -8,9 +8,9 @@ import GalleryApp from './GalleryApp.tsx';
 import { AccessoryName, PetState, PetStage, CapturedImage, Friend } from '../types.ts';
 
 // Charger les composants lourds ou sensibles uniquement lorsqu'ils sont nécessaires
-const PandaChat = lazy(() => import('./PandaChat.tsx'));
-const FriendsApp = lazy(() => import('./FriendsApp.tsx'));
-const FriendChat = lazy(() => import('./FriendChat.tsx'));
+// const PandaChat = lazy(() => import('./PandaChat.tsx'));
+// const FriendsApp = lazy(() => import('./FriendsApp.tsx'));
+// const FriendChat = lazy(() => import('./FriendChat.tsx'));
 
 interface PhoneModalProps {
   onClose: () => void;
@@ -93,6 +93,7 @@ const PhoneModal: React.FC<PhoneModalProps> = (props) => {
         />;
        case 'gallery':
         return <GalleryApp gallery={gallery} />;
+      /*
       case 'chat':
         return (
             <Suspense fallback={<LoadingFallback />}>
@@ -107,6 +108,7 @@ const PhoneModal: React.FC<PhoneModalProps> = (props) => {
                   <FriendsApp onSelectFriend={setChattingWith} userFriendCode={props.userFriendCode} />}
             </Suspense>
         );
+      */
       case 'game':
           if (!activeGame) {
             return (
@@ -134,8 +136,8 @@ const PhoneModal: React.FC<PhoneModalProps> = (props) => {
              <AppIcon icon="🎮" label="Jeu" color="text-green-500" onClick={() => setCurrentApp('game')} />
              <AppIcon icon="📸" label="Photo" color="text-indigo-500" onClick={() => setCurrentApp('camera')} />
              <AppIcon icon="🖼️" label="Galerie" color="text-orange-500" onClick={() => setCurrentApp('gallery')} />
-             <AppIcon icon="💬" label="Chat" color="text-purple-500" onClick={() => setCurrentApp('chat')} />
-             <AppIcon icon="🌀" label="Portail" color="text-cyan-500" onClick={() => setCurrentApp('friends')} />
+             {/* <AppIcon icon="💬" label="Chat" color="text-purple-500" onClick={() => setCurrentApp('chat')} /> */}
+             {/* <AppIcon icon="🌀" label="Portail" color="text-cyan-500" onClick={() => setCurrentApp('friends')} /> */}
           </div>
         );
     }

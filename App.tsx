@@ -12,6 +12,7 @@ const BambooIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="n
 const JouerIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" fill="#F4A7A7"/><path d="M10.5 15.5V8.5L15.5 12L10.5 15.5Z" fill="white"/></svg>;
 const ToilettesIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 11C7 9.89543 7.89543 9 9 9H15C16.1046 9 17 9.89543 17 11V18C17 19.1046 16.1046 20 15 20H9C7.89543 20 7 19.1046 7 18V11Z" fill="#B4D8E4"/><path d="M9 9H15V6C15 4.89543 14.1046 4 13 4H11C9.89543 4 9 4.89543 9 6V9Z" fill="#D6EBF2"/><rect x="10" y="7" width="4" height="2" rx="1" fill="#FFFFFF"/></svg>;
 const BainIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12.3636C4 11.259 4.89543 10.3636 6 10.3636H18C19.1046 10.3636 20 11.259 20 12.3636V13.3636H4V12.3636Z" fill="#DCD5F2"/><path d="M5.61364 12.0911C5.33642 10.1983 6.83028 8.5 8.74768 8.5H15.2523C17.1697 8.5 18.6636 10.1983 18.3864 12.0911L17.0359 21.0911C16.8138 22.5931 15.5288 23.6667 14.0019 23.6667H9.99811C8.47119 23.6667 7.18615 22.5931 6.96408 21.0911L5.61364 12.0911Z" fill="#C3B6E0"/><path d="M6 8C6 6.89543 6.89543 6 8 6H9V5C9 3.34315 10.3431 2 12 2C13.6569 2 15 3.34315 15 5V6H16C17.1046 6 18 6.89543 18 8V10H6V8Z" fill="#DCD5F2"/></svg>;
+const PhoneIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="2" width="12" height="20" rx="2" fill="#D3C9E3"/><rect x="8" y="4" width="8" height="14" rx="1" fill="white"/><circle cx="12" cy="19" r="1" fill="#D3C9E3"/></svg>;
 
 
 const App: React.FC = () => {
@@ -89,6 +90,18 @@ const App: React.FC = () => {
     }
   }, [ageInDays, stage]);
 
+  const handleWakeUp = useCallback(() => {
+    if (petState === 'sleeping' && timeOfDay === 'day') {
+        setMessage('Ton panda est réveillé et plein d\'énergie !');
+        setPetState('happy');
+        setTimeout(() => setMessage(''), 2000);
+    }
+  }, [petState, timeOfDay]);
+
+  useEffect(() => {
+    handleWakeUp();
+  }, [timeOfDay, handleWakeUp]);
+  
   useEffect(() => {
     if (isGameOver) {
       setPetState('sad');
@@ -112,81 +125,72 @@ const App: React.FC = () => {
     }
     
     if (petState === 'sleeping' && timeOfDay === 'day') {
-        setMessage('Ton panda est réveillé et plein d\'énergie !');
-        setPetState('happy');
-        setTimeout(() => setMessage(''), 2000);
+      handleWakeUp();
     }
 
     if (petState !== 'sleeping') {
-      if (stats.hunger < 30) {
-        setPetState('hungry');
-      } else if (stats.cleanliness < 30) {
-        setPetState('dirty');
-      } else if (stats.happiness < 30) {
-        setPetState('sad');
-      } else {
-        setPetState('happy');
-      }
+       if (stats.hunger < 20) {
+         setPetState('hungry');
+       } else if (stats.cleanliness < 30) {
+         setPetState('dirty');
+       } else if (stats.happiness < 30) {
+         setPetState('sad');
+       } else {
+         setPetState('happy');
+       }
     }
-  }, [stats, timeOfDay, petState, isBathing, isGameOver]);
+  }, [stats, timeOfDay, isBathing, isGameOver, petState, handleWakeUp]);
 
-  const handleAction = (stat: Stat) => {
-    if (petState === 'sleeping' || isBathing || isGameOver) return;
-    setStats(prev => ({
-      ...prev,
-      [stat]: Math.min(MAX_STAT, prev[stat] + ACTION_AMOUNTS[stat]),
-    }));
-    switch (stat) {
-      case 'hunger':
-        setMessage('Miam ! Le bambou est délicieux !');
-        break;
-      case 'happiness':
-        setMessage('Super ! C\'était très amusant !');
-        break;
-      case 'cleanliness':
-        setMessage('Ah, ça va mieux !');
-        break;
-    }
+  const performAction = (stat: Stat, amount: number, message: string) => {
+    if (petState === 'sleeping' || isGameOver) return;
+    setStats(prev => ({ ...prev, [stat]: Math.min(MAX_STAT, prev[stat] + amount) }));
+    setMessage(message);
+    setCoins(prev => prev + 1); // Gagne 1 pièce par action
     setTimeout(() => setMessage(''), 2000);
   };
   
-  const handleBath = () => {
-    if (petState === 'sleeping' || isBathing || isGameOver) return;
+  const handleFeed = () => performAction('hunger', ACTION_AMOUNTS.hunger, 'Miam ! C\'est bon le bambou !');
+  const handlePlay = () => performAction('happiness', ACTION_AMOUNTS.happiness, 'On s\'amuse bien !');
+  const handleClean = () => {
+    if (petState === 'sleeping' || isGameOver) return;
     setIsBathing(true);
-    setMessage('Splish, splash ! C\'est l\'heure du bain !');
+    setMessage('Splash ! Tout propre !');
+    
     setTimeout(() => {
-        setStats(prev => ({ ...prev, cleanliness: MAX_STAT }));
-        setIsBathing(false);
-        setMessage('Tout propre et rafraîchi !');
-        setTimeout(() => setMessage(''), 2000);
-    }, 4000);
+      performAction('cleanliness', ACTION_AMOUNTS.cleanliness, 'Je suis tout propre maintenant !');
+      setIsBathing(false);
+    }, 3000);
+  };
+  
+  const handlePoo = () => {
+    setMessage('Oops, il fallait bien que ça sorte...');
+    setStats(prev => ({ ...prev, cleanliness: Math.max(0, prev.cleanliness - 40) }));
+    setTimeout(() => setMessage(''), 2000);
   };
 
-  const handleAddCoins = useCallback((amount: number) => {
-    const coinsToAdd = Number(amount);
-    if (isNaN(coinsToAdd) || coinsToAdd <= 0) {
-      return;
-    }
-    setCoins(prev => prev + coinsToAdd);
-    setMessage(`Tu as gagné ${coinsToAdd} pièces !`);
-    setTimeout(() => setMessage(''), 2000);
-  }, []);
-
-  const handleBuyAccessory = useCallback((accessory: AccessoryName) => {
-    const cost = ACCESSORIES[accessory].price;
-    if (coins >= cost) {
-      setCoins(prev => prev - cost);
-      setOwnedAccessories(prev => [...prev, accessory]);
-      setMessage(`Tu as acheté : ${ACCESSORY_NAMES_FR[accessory]} !`);
-      setTimeout(() => setMessage(''), 2000);
+  const buyAccessory = (accessoryName: AccessoryName): boolean => {
+    const accessory = ACCESSORIES[accessoryName];
+    if (coins >= accessory.price) {
+      setCoins(coins - accessory.price);
+      setOwnedAccessories([...ownedAccessories, accessoryName]);
       return true;
     }
     return false;
-  }, [coins]);
+  };
 
-  const handleEquipAccessory = useCallback((accessory: AccessoryName) => {
-    setEquippedAccessory(prev => (prev === accessory ? null : accessory));
-  }, []);
+  const equipAccessory = (accessoryName: AccessoryName) => {
+    if (equippedAccessory === accessoryName) {
+      setEquippedAccessory(null); // Toggle off
+    } else {
+      setEquippedAccessory(accessoryName);
+    }
+  };
+  
+  const getPetState = (): PetState => {
+      if (isGameOver) return 'sad';
+      if (isBathing) return 'bathing';
+      return petState;
+  }
   
   const handleRestart = () => {
     setStats({
@@ -194,76 +198,71 @@ const App: React.FC = () => {
       happiness: MAX_STAT,
       cleanliness: MAX_STAT,
     });
-    setPetState('happy');
-    setMessage('Un nouveau panda est arrivé !');
+    setPetState(timeOfDay === 'night' ? 'sleeping' : 'happy');
+    setMessage(timeOfDay === 'night' ? 'Zzz...' : 'Prêt pour un nouveau départ !');
     setAgeInTicks(0);
     setStage('baby');
     setCoins(0);
     setOwnedAccessories([]);
     setEquippedAccessory(null);
-    setTimeOfDay('day');
-    setIsBathing(false);
     setIsGameOver(false);
-    setTimeout(() => setMessage(''), 2000);
   };
 
-  const currentPetState = isBathing ? 'bathing' : (isGameOver ? 'sad' : petState);
+  const actionButtonsDisabled = petState === 'sleeping' || isBathing || isGameOver;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <h1 className="text-5xl md:text-6xl text-center text-[#A76B79] font-fredoka mb-4">Pandagotchi</h1>
-      <div className="w-full max-w-sm md:max-w-lg mx-auto rounded-[40px] shadow-lg p-3 border-b-4 border-r-2 border-[#E583A0]/40 bg-[#F8B5C9]">
-        <div className="w-full h-full bg-[#FAD1DC] rounded-[28px] p-2">
-            <div className="w-full h-full bg-[#FEE4E9] rounded-[20px] p-4 flex flex-col items-center relative shadow-inner">
-                
-                <div className="w-full px-2 mt-1">
-                  <StatusBar stats={stats} isSleeping={petState === 'sleeping'} />
-                </div>
-                
-                <div className="w-full h-[220px] md:h-[280px] my-3 bg-pink-100/50 rounded-2xl border-2 border-white/80 shadow-inner flex items-center justify-center p-2">
-                    <PetDisplay state={currentPetState} stage={stage} equippedAccessory={equippedAccessory} />
-                </div>
+    <div className="bg-[#EAE6F9] min-h-screen flex flex-col items-center justify-center p-4">
+      <h1 className="text-5xl font-bold text-center text-[#A76B79] mb-4 font-fredoka">Pandagotchi</h1>
+      <div className="relative w-full max-w-sm mx-auto bg-[#FDF3F6] rounded-[50px] border-8 border-b-16 border-[#F7A6B9] shadow-2xl p-4 pt-6 flex flex-col gap-3">
+          
+          <div className="absolute top-2 right-6 bg-[#F7A6B9] text-white px-3 py-1 rounded-full text-sm font-bold shadow-inner">
+              Jour: {ageInDays}
+          </div>
+          
+          <div className="flex justify-between items-center px-2">
+            <div className="w-12 h-4 bg-[#F7A6B9]/50 rounded-full"></div>
+            <div className="w-12 h-4 bg-[#F7A6B9]/50 rounded-full"></div>
+          </div>
 
-                <div className="text-center text-sm md:text-base text-[#A76B79] font-bold">Âge : {ageInDays} jours</div>
-                <div className="text-center text-xs md:text-sm text-[#B48491] mt-1">Code Ami : <span className="font-mono bg-white/50 px-1.5 py-0.5 rounded">{friendCode}</span></div>
-
-
-                <div className="my-1 h-8 flex items-center justify-center">
-                    <p className="text-center text-sm md:text-base text-[#A76B79] transition-opacity duration-300">{message}</p>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-3 md:gap-4 w-full mt-1">
-                    <ActionButton onClick={() => handleAction('hunger')} disabled={petState === 'sleeping' || isBathing || isGameOver} icon={<BambooIcon />}>Bambou</ActionButton>
-                    <ActionButton onClick={() => handleAction('happiness')} disabled={petState === 'sleeping' || isBathing || isGameOver} icon={<JouerIcon />}>Jouer</ActionButton>
-                    <ActionButton onClick={() => handleAction('cleanliness')} disabled={petState === 'sleeping' || isBathing || isGameOver} icon={<ToilettesIcon />}>Toilettes</ActionButton>
-                    <ActionButton onClick={handleBath} disabled={petState === 'sleeping' || isBathing || isGameOver} icon={<BainIcon />}>Bain</ActionButton>
-                </div>
-            </div>
+        <div className="bg-[#A76B79] rounded-2xl h-64 md:h-80 w-full shadow-inner overflow-hidden relative">
+          <PetDisplay state={getPetState()} stage={stage} equippedAccessory={equippedAccessory} />
         </div>
-        <div className="mt-3 flex justify-center">
-            <button 
-                onClick={() => setIsPhoneOpen(true)} 
-                className="w-12 h-12 md:w-14 md:h-14 bg-[#FDF3F6] rounded-lg flex items-center justify-center text-[#B48491] shadow-md border-2 border-b-4 border-[#FAD1DC]"
-            >
-               <div className="w-6 h-6 bg-[#E583A0]/80 rounded-sm"></div>
+        
+        <div className="px-2 mt-2">
+            <StatusBar stats={stats} isSleeping={petState === 'sleeping'} />
+        </div>
+
+        <p className="text-center text-sm text-[#B48491] mt-2 h-6">{message}</p>
+
+        <div className="grid grid-cols-2 gap-3 mt-2">
+            <ActionButton icon={<BambooIcon />} onClick={handleFeed} disabled={actionButtonsDisabled}>Nourrir</ActionButton>
+            <ActionButton icon={<JouerIcon />} onClick={handlePlay} disabled={actionButtonsDisabled}>Jouer</ActionButton>
+            <ActionButton icon={<ToilettesIcon />} onClick={handlePoo} disabled={actionButtonsDisabled}>Toilettes</ActionButton>
+            <ActionButton icon={<BainIcon />} onClick={handleClean} disabled={actionButtonsDisabled}>Bain</ActionButton>
+        </div>
+        
+        <div className="flex justify-center mt-3">
+            <button onClick={() => setIsPhoneOpen(true)} className="p-3 bg-[#FDF3F6] rounded-full shadow-md border-b-4 border-[#FAD1DC] transition-all hover:bg-white active:shadow-inner">
+                <PhoneIcon />
             </button>
         </div>
+        
+        {isPhoneOpen && <PhoneModal 
+            onClose={() => setIsPhoneOpen(false)} 
+            coins={coins}
+            ownedAccessories={ownedAccessories}
+            equippedAccessory={equippedAccessory}
+            onAddCoins={(amount) => setCoins(c => c + amount)}
+            onBuyAccessory={buyAccessory}
+            onEquipAccessory={equipAccessory}
+            petState={getPetState()}
+            petStage={stage}
+            userFriendCode={friendCode}
+        />}
+
+        {isGameOver && <GameOverModal onRestart={handleRestart} />}
+
       </div>
-      {isPhoneOpen && (
-        <PhoneModal
-          onClose={() => setIsPhoneOpen(false)}
-          coins={coins}
-          ownedAccessories={ownedAccessories}
-          equippedAccessory={equippedAccessory}
-          petState={currentPetState}
-          petStage={stage}
-          onAddCoins={handleAddCoins}
-          onBuyAccessory={handleBuyAccessory}
-          onEquipAccessory={handleEquipAccessory}
-          userFriendCode={friendCode}
-        />
-       )}
-       {isGameOver && <GameOverModal onRestart={handleRestart} />}
     </div>
   );
 };
