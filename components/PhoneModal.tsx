@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import Shop from './Shop.tsx';
 import MiniGame from './MiniGame.tsx';
 import MemoryGame from './MemoryGame.tsx'; 
 import RPSGame from './RPSGame.tsx';
 import PandaSnap from './PandaSnap.tsx';
 import GalleryApp from './GalleryApp.tsx';
-import PandaChat from './PandaChat.tsx';
-import FriendsApp from './FriendsApp.tsx';
-import FriendChat from './FriendChat.tsx';
 import { AccessoryName, PetState, PetStage, CapturedImage, Friend } from '../types.ts';
+
+// Charger les composants lourds ou sensibles uniquement lorsqu'ils sont nécessaires
+const PandaChat = lazy(() => import('./PandaChat.tsx'));
+const FriendsApp = lazy(() => import('./FriendsApp.tsx'));
+const FriendChat = lazy(() => import('./FriendChat.tsx'));
 
 interface PhoneModalProps {
   onClose: () => void;
@@ -25,6 +27,12 @@ interface PhoneModalProps {
 
 type AppName = 'home' | 'shop' | 'game' | 'camera' | 'gallery' | 'chat' | 'friends';
 type GameName = 'coin-rush' | 'memory' | 'rps';
+
+const LoadingFallback = () => (
+    <div className="flex justify-center items-center h-full">
+        <p className="text-[#B48491] animate-pulse">Chargement...</p>
+    </div>
+);
 
 const PhoneModal: React.FC<PhoneModalProps> = (props) => {
   const [currentApp, setCurrentApp] = useState<AppName>('home');
@@ -86,11 +94,19 @@ const PhoneModal: React.FC<PhoneModalProps> = (props) => {
        case 'gallery':
         return <GalleryApp gallery={gallery} />;
       case 'chat':
-        return <PandaChat petState={props.petState} />;
+        return (
+            <Suspense fallback={<LoadingFallback />}>
+                <PandaChat petState={props.petState} />
+            </Suspense>
+        );
       case 'friends':
-        return chattingWith ? 
-          <FriendChat friend={chattingWith} /> : 
-          <FriendsApp onSelectFriend={setChattingWith} userFriendCode={props.userFriendCode} />;
+        return (
+            <Suspense fallback={<LoadingFallback />}>
+                {chattingWith ? 
+                  <FriendChat friend={chattingWith} /> : 
+                  <FriendsApp onSelectFriend={setChattingWith} userFriendCode={props.userFriendCode} />}
+            </Suspense>
+        );
       case 'game':
           if (!activeGame) {
             return (
