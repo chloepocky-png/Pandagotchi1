@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { GoogleGenAI } from "@google/genai";
-import { Friend, ChatMessage } from '../types';
+import { Friend, ChatMessage } from '../types.ts';
 
 interface FriendChatProps {
     friend: Friend;

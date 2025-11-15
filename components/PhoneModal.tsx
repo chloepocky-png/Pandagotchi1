@@ -1,14 +1,15 @@
+
 import React, { useState } from 'react';
-import Shop from './Shop';
-import MiniGame from './MiniGame';
-import MemoryGame from './MemoryGame'; 
-import RPSGame from './RPSGame';
-import PandaSnap from './PandaSnap';
-import GalleryApp from './GalleryApp';
-import PandaChat from './PandaChat';
-import FriendsApp from './FriendsApp';
-import FriendChat from './FriendChat';
-import { AccessoryName, PetState, PetStage, CapturedImage, Friend } from '../types';
+import Shop from './Shop.tsx';
+import MiniGame from './MiniGame.tsx';
+import MemoryGame from './MemoryGame.tsx'; 
+import RPSGame from './RPSGame.tsx';
+import PandaSnap from './PandaSnap.tsx';
+import GalleryApp from './GalleryApp.tsx';
+import PandaChat from './PandaChat.tsx';
+import FriendsApp from './FriendsApp.tsx';
+import FriendChat from './FriendChat.tsx';
+import { AccessoryName, PetState, PetStage, CapturedImage, Friend } from '../types.ts';
 
 interface PhoneModalProps {
   onClose: () => void;
