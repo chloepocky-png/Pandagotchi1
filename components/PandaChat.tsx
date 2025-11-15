@@ -37,9 +37,10 @@ const PandaChat: React.FC<{ petState: PetState }> = ({ petState }) => {
     const [error, setError] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     
-    // Initialize chat session
+    // Initialize or update the chat session when the pet's state changes.
     useEffect(() => {
         try {
+            setError(null);
             const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
             const chatSession = ai.chats.create({
                 model: 'gemini-2.5-flash',
@@ -48,12 +49,13 @@ const PandaChat: React.FC<{ petState: PetState }> = ({ petState }) => {
                 },
             });
             setChat(chatSession);
+            // Reset messages with a new greeting whenever the personality changes.
             setMessages([{ sender: 'panda', text: 'Coucou ! Tu veux discuter ?' }]);
         } catch(e) {
             console.error("Erreur d'initialisation du chat Gemini:", e);
             setError("Impossible de démarrer le chat. L'API est peut-être indisponible.");
         }
-    }, []); // Run only once when the component mounts
+    }, [petState]); // Dependency on petState ensures the chat personality updates.
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
