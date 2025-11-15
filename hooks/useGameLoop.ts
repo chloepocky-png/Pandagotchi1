@@ -1,13 +1,14 @@
 import { useEffect, useRef } from 'react';
 
 export const useGameLoop = (callback: () => void, delay: number | null) => {
-  // FIX: Initialize useRef with the callback to provide an initial value and resolve the error.
-  const savedCallback = useRef(callback);
+  const savedCallback = useRef<() => void>();
 
+  // Remember the latest callback.
   useEffect(() => {
     savedCallback.current = callback;
   }, [callback]);
 
+  // Set up the interval.
   useEffect(() => {
     const tick = () => {
       if (savedCallback.current) {

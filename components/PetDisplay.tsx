@@ -1,10 +1,10 @@
 import React from 'react';
-import { PetState, PetStage } from '../types';
+import { PetState, PetStage, AccessoryName } from '../types';
 
 interface PetDisplayProps {
   state: PetState;
   stage: PetStage;
-  equippedAccessory: null; // Accessories removed to match reference image
+  equippedAccessory: AccessoryName | null;
 }
 
 // New color palette from user's SVG
