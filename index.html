@@ -8,8 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Varela+Round&display=swap" rel="stylesheet">
-    <!-- Ajout de Babel pour transpiler le JSX -->
+    <!-- Ajout de Babel pour transpiler le JSX et TypeScript -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/@babel/preset-typescript@7/dist/standalone.js"></script>
   <script type="importmap">
 {
   "imports": {
@@ -35,7 +36,7 @@
       <h1 class="text-5xl font-bold text-center text-[#A76B79] mb-4 font-fredoka">Pandagotchi</h1>
       <div id="root"></div>
     </div>
-    <!-- Modification du type de script pour que Babel puisse le transpiler -->
-    <script type="text/babel" data-type="module" src="./index.tsx"></script>
+    <!-- Modification du type de script pour que Babel puisse le transpiler avec les bons presets -->
+    <script type="text/babel" data-presets="typescript,react" data-type="module" src="./index.tsx"></script>
   </body>
 </html>
