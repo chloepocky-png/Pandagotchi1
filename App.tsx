@@ -30,12 +30,17 @@ const App: React.FC = () => {
   const [timeOfDay, setTimeOfDay] = useState<'day' | 'night'>('night');
   const [isBathing, setIsBathing] = useState(false);
   const [friendCode] = useState(() => {
-    let code = localStorage.getItem('pandaFriendCode');
-    if (!code) {
-      code = `PANDA-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-      localStorage.setItem('pandaFriendCode', code);
+    try {
+      let code = localStorage.getItem('pandaFriendCode');
+      if (!code) {
+        code = `PANDA-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+        localStorage.setItem('pandaFriendCode', code);
+      }
+      return code;
+    } catch (error) {
+      console.error("Impossible d'accéder au localStorage pour le code ami :", error);
+      return `PANDA-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
     }
-    return code;
   });
 
   const ageInDays = Math.floor(ageInTicks / DAY_CYCLE_TICKS);

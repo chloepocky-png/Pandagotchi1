@@ -21,7 +21,11 @@ const FriendsApp: React.FC<FriendsAppProps> = ({ onSelectFriend, userFriendCode 
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem('pandaFriendsList', JSON.stringify(friendsList));
+    try {
+      localStorage.setItem('pandaFriendsList', JSON.stringify(friendsList));
+    } catch (error) {
+      console.error("Impossible d'enregistrer la liste d'amis dans le localStorage :", error);
+    }
   }, [friendsList]);
 
   const handleAddFriend = async (e: React.FormEvent) => {
