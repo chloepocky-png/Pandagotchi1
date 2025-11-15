@@ -1,0 +1,5 @@
+{
+  "name": "Pandagotchi",
+  "description": "Un jeu d'animal de compagnie virtuel simple et amusant créé avec React et Tailwind CSS. Gardez votre compagnon numérique heureux, nourri et propre pour le voir s'épanouir !",
+  "requestFramePermissions": []
+}
