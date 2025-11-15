@@ -3,6 +3,7 @@ import PetDisplay from './components/PetDisplay.tsx';
 import StatusBar from './components/StatusBar.tsx';
 import PhoneModal from './components/PhoneModal.tsx';
 import ActionButton from './components/ActionButton.tsx';
+import GameOverModal from './components/GameOverModal.tsx';
 import { PetState, Stat, PetStage, AccessoryName } from './types.ts';
 import { GAME_SPEED, MAX_STAT, STAT_DECAY_RATE, ACTION_AMOUNTS, EVOLUTION_AGE, ACCESSORIES, ACCESSORY_NAMES_FR, DAY_CYCLE_TICKS, NIGHT_START_TICK, SLEEP_STAT_DECAY_RATE } from './constants.ts';
 import { useGameLoop } from './hooks/useGameLoop.ts';
@@ -29,6 +30,7 @@ const App: React.FC = () => {
   const [equippedAccessory, setEquippedAccessory] = useState<AccessoryName | null>(null);
   const [timeOfDay, setTimeOfDay] = useState<'day' | 'night'>('night');
   const [isBathing, setIsBathing] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
   const [friendCode] = useState(() => {
     try {
       let code = localStorage.getItem('pandaFriendCode');
@@ -46,6 +48,8 @@ const App: React.FC = () => {
   const ageInDays = Math.floor(ageInTicks / DAY_CYCLE_TICKS);
 
   const handleStatDecay = useCallback(() => {
+    if (isGameOver) return;
+
     const isSleeping = petState === 'sleeping';
 
     setStats(prevStats => {
@@ -68,7 +72,7 @@ const App: React.FC = () => {
       setTimeOfDay(currentTickInDay >= NIGHT_START_TICK ? 'night' : 'day');
       return newTicks;
     });
-  }, [petState]);
+  }, [petState, isGameOver]);
 
   useGameLoop(handleStatDecay, GAME_SPEED);
   
@@ -86,6 +90,16 @@ const App: React.FC = () => {
   }, [ageInDays, stage]);
 
   useEffect(() => {
+    if (isGameOver) {
+      setPetState('sad');
+      return;
+    }
+    if (stats.hunger <= 0 || stats.happiness <= 0) {
+        setIsGameOver(true);
+        setMessage('Oh non ! Ton panda est parti...');
+        return;
+    }
+    
     if (isBathing) return;
 
     const canSleep = stats.happiness > 50 && stats.hunger > 40 && stats.cleanliness > 40;
@@ -114,10 +128,10 @@ const App: React.FC = () => {
         setPetState('happy');
       }
     }
-  }, [stats, timeOfDay, petState, isBathing]);
+  }, [stats, timeOfDay, petState, isBathing, isGameOver]);
 
   const handleAction = (stat: Stat) => {
-    if (petState === 'sleeping' || isBathing) return;
+    if (petState === 'sleeping' || isBathing || isGameOver) return;
     setStats(prev => ({
       ...prev,
       [stat]: Math.min(MAX_STAT, prev[stat] + ACTION_AMOUNTS[stat]),
@@ -137,7 +151,7 @@ const App: React.FC = () => {
   };
   
   const handleBath = () => {
-    if (petState === 'sleeping' || isBathing) return;
+    if (petState === 'sleeping' || isBathing || isGameOver) return;
     setIsBathing(true);
     setMessage('Splish, splash ! C\'est l\'heure du bain !');
     setTimeout(() => {
@@ -173,6 +187,27 @@ const App: React.FC = () => {
   const handleEquipAccessory = useCallback((accessory: AccessoryName) => {
     setEquippedAccessory(prev => (prev === accessory ? null : accessory));
   }, []);
+  
+  const handleRestart = () => {
+    setStats({
+      hunger: MAX_STAT,
+      happiness: MAX_STAT,
+      cleanliness: MAX_STAT,
+    });
+    setPetState('happy');
+    setMessage('Un nouveau panda est arrivé !');
+    setAgeInTicks(0);
+    setStage('baby');
+    setCoins(0);
+    setOwnedAccessories([]);
+    setEquippedAccessory(null);
+    setTimeOfDay('day');
+    setIsBathing(false);
+    setIsGameOver(false);
+    setTimeout(() => setMessage(''), 2000);
+  };
+
+  const currentPetState = isBathing ? 'bathing' : (isGameOver ? 'sad' : petState);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
@@ -186,7 +221,7 @@ const App: React.FC = () => {
                 </div>
                 
                 <div className="w-full h-[220px] md:h-[280px] my-3 bg-pink-100/50 rounded-2xl border-2 border-white/80 shadow-inner flex items-center justify-center p-2">
-                    <PetDisplay state={isBathing ? 'bathing' : petState} stage={stage} equippedAccessory={equippedAccessory} />
+                    <PetDisplay state={currentPetState} stage={stage} equippedAccessory={equippedAccessory} />
                 </div>
 
                 <div className="text-center text-sm md:text-base text-[#A76B79] font-bold">Âge : {ageInDays} jours</div>
@@ -198,10 +233,10 @@ const App: React.FC = () => {
                 </div>
                 
                 <div className="grid grid-cols-2 gap-3 md:gap-4 w-full mt-1">
-                    <ActionButton onClick={() => handleAction('hunger')} disabled={petState === 'sleeping' || isBathing} icon={<BambooIcon />}>Bambou</ActionButton>
-                    <ActionButton onClick={() => handleAction('happiness')} disabled={petState === 'sleeping' || isBathing} icon={<JouerIcon />}>Jouer</ActionButton>
-                    <ActionButton onClick={() => handleAction('cleanliness')} disabled={petState === 'sleeping' || isBathing} icon={<ToilettesIcon />}>Toilettes</ActionButton>
-                    <ActionButton onClick={handleBath} disabled={petState === 'sleeping' || isBathing} icon={<BainIcon />}>Bain</ActionButton>
+                    <ActionButton onClick={() => handleAction('hunger')} disabled={petState === 'sleeping' || isBathing || isGameOver} icon={<BambooIcon />}>Bambou</ActionButton>
+                    <ActionButton onClick={() => handleAction('happiness')} disabled={petState === 'sleeping' || isBathing || isGameOver} icon={<JouerIcon />}>Jouer</ActionButton>
+                    <ActionButton onClick={() => handleAction('cleanliness')} disabled={petState === 'sleeping' || isBathing || isGameOver} icon={<ToilettesIcon />}>Toilettes</ActionButton>
+                    <ActionButton onClick={handleBath} disabled={petState === 'sleeping' || isBathing || isGameOver} icon={<BainIcon />}>Bain</ActionButton>
                 </div>
             </div>
         </div>
@@ -220,7 +255,7 @@ const App: React.FC = () => {
           coins={coins}
           ownedAccessories={ownedAccessories}
           equippedAccessory={equippedAccessory}
-          petState={isBathing ? 'bathing' : petState}
+          petState={currentPetState}
           petStage={stage}
           onAddCoins={handleAddCoins}
           onBuyAccessory={handleBuyAccessory}
@@ -228,6 +263,7 @@ const App: React.FC = () => {
           userFriendCode={friendCode}
         />
        )}
+       {isGameOver && <GameOverModal onRestart={handleRestart} />}
     </div>
   );
 };
