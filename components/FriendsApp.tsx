@@ -1,5 +1,5 @@
 import React from 'react';
-import { Friend } from '../types';
+import { Friend } from '../types.ts';
 
 interface FriendsAppProps {
     onSelectFriend: (friend: Friend) => void;

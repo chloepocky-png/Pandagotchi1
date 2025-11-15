@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { GoogleGenAI, Chat } from "@google/genai";
-import { PetState, ChatMessage } from '../types';
+import { PetState, ChatMessage } from '../types.ts';
+import { getApiKey } from '../apiKeyManager.ts';
 
 // Helper function to create the system instruction based on pet's state
 const getSystemInstruction = (state: PetState): string => {
@@ -39,22 +40,33 @@ const PandaChat: React.FC<{ petState: PetState }> = ({ petState }) => {
     
     // Initialize or update the chat session when the pet's state changes.
     useEffect(() => {
-        try {
-            setError(null);
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-            const chatSession = ai.chats.create({
-                model: 'gemini-2.5-flash',
-                config: {
-                    systemInstruction: getSystemInstruction(petState),
-                },
-            });
-            setChat(chatSession);
-            // Reset messages with a new greeting whenever the personality changes.
-            setMessages([{ sender: 'panda', text: 'Coucou ! Tu veux discuter ?' }]);
-        } catch(e) {
-            console.error("Erreur d'initialisation du chat Gemini:", e);
-            setError("Impossible de démarrer le chat. L'API est peut-être indisponible.");
-        }
+        const initChat = () => {
+            try {
+                setError(null);
+                const apiKey = getApiKey();
+                if (!apiKey) {
+                    // FIX: Updated error message to no longer prompt for an API key.
+                    setError("La clé API n'est pas configurée. Le chat est indisponible.");
+                    setMessages([]);
+                    return;
+                }
+
+                const ai = new GoogleGenAI({ apiKey });
+                const chatSession = ai.chats.create({
+                    model: 'gemini-2.5-flash',
+                    config: {
+                        systemInstruction: getSystemInstruction(petState),
+                    },
+                });
+                setChat(chatSession);
+                // Reset messages with a new greeting whenever the personality changes.
+                setMessages([{ sender: 'panda', text: 'Coucou ! Tu veux discuter ?' }]);
+            } catch(e) {
+                console.error("Erreur d'initialisation du chat Gemini:", e);
+                setError("Impossible de démarrer le chat. Vérifiez votre clé API ou la disponibilité du service.");
+            }
+        };
+        initChat();
     }, [petState]); // Dependency on petState ensures the chat personality updates.
 
     const scrollToBottom = () => {
@@ -129,9 +141,9 @@ const PandaChat: React.FC<{ petState: PetState }> = ({ petState }) => {
                     onChange={(e) => setUserInput(e.target.value)}
                     placeholder="Écris à ton panda..."
                     className="flex-grow bg-white/80 rounded-full py-2 px-4 text-sm text-[#A76B79] focus:outline-none focus:ring-2 focus:ring-[#F9C2D1]"
-                    disabled={isLoading || !chat}
+                    disabled={isLoading || !chat || !!error}
                 />
-                <button type="submit" disabled={isLoading || !userInput.trim() || !chat} className="w-10 h-10 bg-[#E583A0] rounded-full text-white flex items-center justify-center transition-colors hover:bg-[#d86f8f] disabled:bg-[#e6a8b9] disabled:cursor-not-allowed">
+                <button type="submit" disabled={isLoading || !userInput.trim() || !chat || !!error} className="w-10 h-10 bg-[#E583A0] rounded-full text-white flex items-center justify-center transition-colors hover:bg-[#d86f8f] disabled:bg-[#e6a8b9] disabled:cursor-not-allowed">
                      <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" /></svg>
                 </button>
             </form>

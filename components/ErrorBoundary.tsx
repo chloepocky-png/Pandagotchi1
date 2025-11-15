@@ -10,19 +10,23 @@ interface State {
 }
 
 class ErrorBoundary extends Component<Props, State> {
-  // FIX: Initialize state as a class property.
-  // This is a more modern and robust syntax for React class components
-  // that ensures TypeScript correctly recognizes `this.state` and `this.props`.
-  public state: State = {
-    hasError: false,
-    error: null,
-  };
+  // FIX: The previous state initialization using a class property was causing a
+  // TypeScript error. Switched to using a constructor which is a more
+  // widely supported way to initialize state and ensures `this.props` is correctly typed.
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      hasError: false,
+      error: null,
+    };
+  }
 
-  public static getDerivedStateFromError(error: Error): State {
+
+  static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Erreur interceptée par ErrorBoundary:", error, errorInfo);
   }
 
@@ -30,7 +34,7 @@ class ErrorBoundary extends Component<Props, State> {
     window.location.reload();
   };
 
-  public render() {
+  render() {
     if (this.state.hasError) {
       return (
         <div className="relative w-full max-w-sm mx-auto bg-[#FDF3F6] rounded-[50px] border-8 border-b-16 border-[#F7A6B9] shadow-2xl p-4 pt-6 flex flex-col gap-3">

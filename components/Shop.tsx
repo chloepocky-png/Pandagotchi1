@@ -1,6 +1,6 @@
 import React from 'react';
-import { ACCESSORIES, ACCESSORY_NAMES_FR } from '../constants';
-import { AccessoryName } from '../types';
+import { ACCESSORIES, ACCESSORY_NAMES_FR } from '../constants.ts';
+import { AccessoryName } from '../types.ts';
 
 interface ShopProps {
   coins: number;

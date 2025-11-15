@@ -1,14 +1,14 @@
 import React, { useState, lazy, Suspense } from 'react';
-import Shop from './Shop';
-import MiniGame from './MiniGame';
-import MemoryGame from './MemoryGame'; 
-import RPSGame from './RPSGame';
-import PandaSnap from './PandaSnap';
-import GalleryApp from './GalleryApp';
-import { AccessoryName, PetState, PetStage, CapturedImage, Friend } from '../types';
+import Shop from './Shop.tsx';
+import MiniGame from './MiniGame.tsx';
+import MemoryGame from './MemoryGame.tsx'; 
+import RPSGame from './RPSGame.tsx';
+import PandaSnap from './PandaSnap.tsx';
+import GalleryApp from './GalleryApp.tsx';
+import { AccessoryName, PetState, PetStage, CapturedImage, Friend } from '../types.ts';
 
 // Charger les composants lourds ou sensibles uniquement lorsqu'ils sont nécessaires
-const PandaChat = lazy(() => import('./PandaChat'));
+const PandaChat = lazy(() => import('./PandaChat.tsx'));
 // const FriendsApp = lazy(() => import('./FriendsApp'));
 // const FriendChat = lazy(() => import('./FriendChat'));
 
