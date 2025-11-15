@@ -27,9 +27,5 @@ function main() {
   }
 }
 
-// S'assurer que le script s'exécute après que le DOM est prêt
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', main);
-} else {
-  main();
-}
+// Le script étant chargé à la fin du corps de la page, le DOM est déjà prêt.
+main();
